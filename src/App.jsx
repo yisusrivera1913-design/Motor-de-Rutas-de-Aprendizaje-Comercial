@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { RoleSelector } from './components/RoleSelector';
 import { DomainAuditor } from './components/DomainAuditor';
 import { RouteVisualizer } from './components/RouteVisualizer';
+import { TelemetryPanel } from './components/TelemetryPanel';
 import { LearningProvider, useLearning } from './context/LearningContext';
 
 /** Variantes de animación compartidas por todos los screens. */
@@ -75,6 +76,9 @@ function AppContent() {
       <footer className="global-footer">
         <p>© 2026 VentaMax S.A.S. • Motor de Rutas de Aprendizaje • Jesús - Kometa AI Reto B</p>
       </footer>
+
+      {/* Componente flotante opcional de Telemetría */}
+      <TelemetryPanel />
     </div>
   );
 }

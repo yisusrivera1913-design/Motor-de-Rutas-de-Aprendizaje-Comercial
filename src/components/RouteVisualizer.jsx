@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Map, AlertCircle, Award, Clock, ChevronLeft, TrendingUp, BookOpen, Zap, BrainCircuit, Loader2, AlertTriangle, Target, Lightbulb, Trophy } from 'lucide-react';
+import { Map, AlertCircle, Award, Clock, ChevronLeft, TrendingUp, BookOpen, Zap, BrainCircuit, Loader2, AlertTriangle, Target, Lightbulb, Trophy, ShieldCheck } from 'lucide-react';
 import { useLearning } from '../context/LearningContext';
 import { RouteNodeBadge } from './RouteNodeBadge';
 
@@ -12,7 +12,7 @@ import { RouteNodeBadge } from './RouteNodeBadge';
 export function RouteVisualizer({ variants }) {
   const {
     activeRoleDetails, learningPath, engineError, handleReset, prevStep,
-    aiSynthesis, isAiLoading, aiError, generateAiMentorSpeech
+    aiSynthesis, isAiLoading, aiError, generateAiMentorSpeech, isUsingRescue
   } = useLearning();
 
   const routeStats = useMemo(() => {
@@ -126,6 +126,7 @@ export function RouteVisualizer({ variants }) {
                   topic={topic} 
                   index={index} 
                   aiContent={aiModuleData}
+                  isRescue={isUsingRescue}
                 />
               );
             })}
@@ -180,7 +181,22 @@ export function RouteVisualizer({ variants }) {
                 </motion.div>
               )}
 
-              {aiError && (
+              {isUsingRescue && (
+                <motion.div
+                  key="rescue"
+                  className="ai-rescue-alert"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                >
+                  <ShieldCheck size={20} className="text-success" />
+                  <div className="rescue-text">
+                    <p><strong>Escudo Determinista Activado</strong></p>
+                    <p>La IA experimenta latencia. El motor local ha inyectado datos de respaldo para asegurar tu experiencia.</p>
+                  </div>
+                </motion.div>
+              )}
+
+              {aiError && !isUsingRescue && (
                 <motion.div
                   key="error"
                   className="ai-error-state"
@@ -208,7 +224,12 @@ export function RouteVisualizer({ variants }) {
                       <h3>Diagnóstico Estratégico Neural</h3>
                       <p>Sintetizado para {activeRoleDetails?.name}</p>
                     </div>
-                    <div className="header-tag">Google Gemini 2.5 Flash</div>
+                    <div className={`header-tag source-${aiSynthesis.source}`}>
+                      {aiSynthesis.source === 'api_primary' && "🤖 Gemini 2.0 (LIVE)"}
+                      {aiSynthesis.source === 'fallback'    && "⚡ Gemini 1.5 (BACKUP)"}
+                      {aiSynthesis.source === 'cache'       && "🚀 CACHE HIT (0ms)"}
+                      {aiSynthesis.source === 'rescue'      && "🛡️ MOTOR DETERMINISTA"}
+                    </div>
                   </header>
 
                   <div className="dashboard-grid">
@@ -231,7 +252,7 @@ export function RouteVisualizer({ variants }) {
                       transition={{ delay: 0.3 }}
                     >
                       <div className="card-lbl"><Lightbulb size={16} /> Diagnóstico de Brechas</div>
-                      <p>{aiSynthesis.gapAnalysis}</p>
+                      <p>{aiSynthesis.gapAnalysis || "Análisis de brechas optimizado basado en el perfil de cargo seleccionado."}</p>
                     </motion.section>
 
                     {/* Sección 3: Reto Ejecutivo Final */}

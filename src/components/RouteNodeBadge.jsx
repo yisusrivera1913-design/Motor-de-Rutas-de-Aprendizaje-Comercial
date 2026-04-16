@@ -1,6 +1,6 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, Layers, Clock, CheckCircle2 } from 'lucide-react';
+import { ArrowUpRight, Layers, CheckCircle2 } from 'lucide-react';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const UI_DICTIONARY = {
@@ -15,7 +15,8 @@ export const UI_DICTIONARY = {
  * RouteNodeBadge — v5 con Inteligencia de Módulo Profundo
  * Ahora puede renderizar sub-ítems generados por la IA de Groq.
  */
-export const RouteNodeBadge = memo(({ topic, index, aiContent }) => {
+export const RouteNodeBadge = memo(({ topic, index, aiContent, isRescue }) => {
+  const [isAiExpanded, setIsAiExpanded] = useState(false);
   const safeLevelClass = UI_DICTIONARY.levels[topic.level?.toLowerCase()] || 'basico';
 
   return (
@@ -48,9 +49,25 @@ export const RouteNodeBadge = memo(({ topic, index, aiContent }) => {
         <div className="node-card-body">
           <p className="node-reasoning">{topic.reasoning}</p>
           
+          {aiContent && (
+            <button 
+              className={`ai-toggle-btn ${isAiExpanded ? 'active' : ''} ${isRescue ? 'rescue-mode' : ''}`}
+              onClick={() => setIsAiExpanded(!isAiExpanded)}
+              aria-expanded={isAiExpanded}
+            >
+              <Layers size={14} />
+              {isAiExpanded 
+                ? 'Ocultar Detalle' 
+                : isRescue 
+                  ? '🛡️ Ver Plan de Estudio'
+                  : '✨ Ver Profundización Neural (IA)'
+              }
+            </button>
+          )}
+          
           {/* SECCIÓN IA: Sub-ítems de estudio detallados */}
           <AnimatePresence>
-            {aiContent && (
+            {aiContent && isAiExpanded && (
               <motion.div 
                 className="ai-module-deepdive"
                 initial={{ opacity: 0, height: 0 }}
@@ -61,7 +78,7 @@ export const RouteNodeBadge = memo(({ topic, index, aiContent }) => {
                 
                 {aiContent.detailedSummary && (
                   <div className="ai-detailed-summary">
-                    {aiContent.detailedSummary.split('\\n').filter(p => p.trim() !== '').map((para, i) => (
+                    {aiContent.detailedSummary.split('\n').filter(p => p.trim() !== '').map((para, i) => (
                       <p key={i}>{para}</p>
                     ))}
                   </div>
