@@ -49,8 +49,8 @@ ESTRUCTURA EXACTA DEL JSON DE SALIDA:
 
   const userPrompt = `Cargo: ${roleDetails.name}\nPerfil del Cargo: ${roleDetails.profile}\n\nRuta de Módulos Generada:\n${routeItemsString}\n\nInstrucción: Genera el JSON desglosando los ítems de estudio DENTRO de cada módulo. Sé ultra-específico según el cargo.`;
 
-  // Solo Gemini 2.5 Flash tiene cuota en esta clave
-  const urlPrimary = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  // Usamos gemini-flash-latest para mayor estabilidad ante errores 503
+  const urlPrimary = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
   // Sin fallback a otro modelo (no hay cuota disponible en otros modelos)
 
   const requestOptions = {
