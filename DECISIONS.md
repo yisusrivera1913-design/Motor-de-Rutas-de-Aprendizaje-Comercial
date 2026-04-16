@@ -27,10 +27,10 @@ Cada cargo define un `targetVector` (mapa de categoría → peso 0.0 a 1.0). El 
 
 ---
 
-## 3. Arquitectura Frontend: Zero-Backend, Zero-IA
+## 3. Arquitectura Frontend Híbrida: Grafos en Cliente + Cloud Neural Engine
 
-**Stack:** React 18 + Vite + Framer Motion + CSS nativo (sistema de variables).
+**Stack:** React 18 + Vite + Framer Motion + API REST (fetch) + CSS nativo (Design Tokens en `index.css`).
 
-- **Sin backend ni LLM:** Todo el cálculo del grafo ocurre en el cliente en <2ms. La "IA" es matemática determinista — predecible, auditable y sin costo de API.
-- **SRP estricto:** `engine.js` (lógica) / `data.js` (datos) / `hooks/` (estado) / `components/` (UI) son capas totalmente independientes.
-- **Robustez:** El motor valida tipos de entrada y aplica auto-healing (inputs no iterables → array vacío), validado con una suite de 50 stress-tests con Fast-Fail.
+- **Procesamiento Base Offline:** Todo el cálculo del grafo topológico y la matemática restrictiva ocurre en el cliente en <2ms. Esto garantiza que la generación de la ruta base (el armazón Básico a Avanzado) es 100% determinista, predecible e imposible de alucinar.
+- **Inteligencia Cloud a Demanda (Gemini):** Se delegó exclusiva y únicamente la capa de "Generación de Syllabus Ejecutivo" al modelo **Google Gemini 2.5 Flash** (con fallback resiliante a **Gemini 3.1 Flash Lite**). De esta forma, combinamos el control matemático absoluto (Grafos) con la riqueza expositiva (IA) sin mezclar responsabilidades.
+- **SRP estricto:** `engine.js` (lógica y grafos), `data.js` (base de datos estricta de 20 temas), `geminiService.js` (Neural API), y `components/` (UI) son capas totalmente independientes, validado mediante arquitectura "Zero-Tailwind" para asegurar originalidad en el diseño.
